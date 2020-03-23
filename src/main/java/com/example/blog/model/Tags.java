@@ -44,7 +44,9 @@ public class Tags extends AuditModel {
     @Override
 	public String toString() {
 		return "Tutorial [id=" + id + ", name=" + name +  "]";
-	}
+    }
+    
+
 
     
 }

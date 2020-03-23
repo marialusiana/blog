@@ -31,11 +31,7 @@ public class Blog extends AuditModel{
     @JsonManagedReference
     private Categories categories;
 
-    @ManyToOne
-    @JoinColumn(name = "blog_tags_id")
-    @JsonManagedReference
-    private BlogTags blog_tags;
-
+ 
     public long getId() {
         return id;
     }

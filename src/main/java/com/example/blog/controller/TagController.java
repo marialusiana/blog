@@ -19,22 +19,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.blog.model.Tags;
-import com.example.blog.model.ResponseBaseDTO;
+import com.example.blog.common.dto.ResponseBaseDTO;
 import com.example.blog.repository.TagRepository;
+import com.example.blog.service.TagService;
 
 @RestController
 @RequestMapping("/api")
 public class TagController {
 
-	@Autowired
-    TagRepository tagRepository;
+    @Autowired
+    TagService tagService;
 
     @GetMapping("/tags")
-    public ResponseEntity<ResponseBaseDTO> listUser(){ 
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
+    public ResponseEntity<ResponseBaseDTO<Iterable<Tags>>> listUser(){ 
+        ResponseBaseDTO<Iterable<Tags>> response = new ResponseBaseDTO<Iterable<Tags>>(); 
         try
         {         
-         List<Tags> userList = tagRepository.findAll();
+         Iterable<Tags> userList = tagService.findAll();
          response.setStatus(true);
          response.setCode("200");
          response.setMessage("success");
@@ -51,37 +52,12 @@ public class TagController {
         }
         
         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        
-        // return userService.findAll();
+
     }
 
-
-	@GetMapping("/tag")
-	public ResponseEntity<ResponseBaseDTO> getAllTags() {
-        ResponseBaseDTO response = new ResponseBaseDTO(); 
-        try {
-            final List<Tags> tag = new ArrayList<Tags>();
-            tagRepository.findAll().forEach(tag::add);
-
-                response.setStatus(true);
-                response.setCode("200");
-                response.setMessage("success");
-                response.setData(tag);     
- 
-
-            if (tag.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (final Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping("/tag/{id}")
+    @GetMapping("/tags/{id}")
 	public ResponseEntity<ResponseBaseDTO> getTutorialById(@PathVariable("id") long id) {
-        Optional<Tags> tagData = tagRepository.findById(id);
+        Optional<Tags> tagData = tagService.findById(id);
         
         ResponseBaseDTO response = new ResponseBaseDTO(); 
 
@@ -101,12 +77,12 @@ public class TagController {
 	public ResponseEntity<ResponseBaseDTO> createTutorial(@RequestBody Tags tag) {
         ResponseBaseDTO response = new ResponseBaseDTO(); 
 		try {
-            Tags _tag = tagRepository.save(new Tags(tag.getName()));
+             Tags _tag = tagService.save(new Tags(tag.getName()));
             
             response.setStatus(true);
             response.setCode("200");
             response.setMessage("success");
-            response.setData( _tag);
+            response.setData(_tag);
 
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -116,12 +92,12 @@ public class TagController {
 
     @PutMapping("/tag/{id}")
 	public ResponseEntity<Tags> updateTutorial(@PathVariable("id") long id, @RequestBody Tags tutorial) {
-		Optional<Tags> tutorialData = tagRepository.findById(id);
+		Optional<Tags> tutorialData = tagService.findById(id);
 
 		if (tutorialData.isPresent()) {
 			Tags _tutorial = tutorialData.get();
 			_tutorial.setName(tutorial.getName());
-			return new ResponseEntity<>(tagRepository.save(_tutorial), HttpStatus.OK);
+			return new ResponseEntity<>(tagService.save(_tutorial), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -130,7 +106,7 @@ public class TagController {
     @DeleteMapping("/tag/{id}")
 	public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id) {
 		try {
-			tagRepository.deleteById(id);
+			tagService.delete(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
