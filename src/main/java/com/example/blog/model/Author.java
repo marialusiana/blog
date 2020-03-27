@@ -20,6 +20,18 @@ public class Author extends AuditModel  {
     private String first_name;
     @Column(length = 45)
     private String last_name;
+    
+    public Author(String username, String first_name, String last_name, String password) {
+		this.username = username;
+		this.first_name = first_name;
+        this.last_name = last_name;
+        this.password = password;
+    }
+    
+    public Author() {
+
+	}
+
 
     public long getId() {
         return id;

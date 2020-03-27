@@ -11,6 +11,7 @@ import javax.websocket.Decoder.Text;
 import java.time.LocalDateTime;
 import java.time.Year;
 
+
 @Entity
 public class Blog extends AuditModel{
     @Id
@@ -60,7 +61,7 @@ public class Blog extends AuditModel{
         return author;
     }
 
-    public void setAuthorAuthor(final Author author) {
+    public void setAuthor(final Author author) {
         this.author = author;
     }
 
@@ -72,11 +73,4 @@ public class Blog extends AuditModel{
         this.categories = categories;
     }
 
-    public BlogTags getBlogTags() {
-        return blog_tags;
-    }
-
-    public void setBlogTags(final BlogTags blog_tags) {
-        this.blog_tags = blog_tags;
-    }
 }

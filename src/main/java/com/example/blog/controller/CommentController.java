@@ -19,25 +19,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.blog.model.Blog;
-import com.example.blog.model.Tags;
+import com.example.blog.model.Comment;
 import com.example.blog.common.dto.ResponseBaseDTO;
 import com.example.blog.repository.TagRepository;
 import com.example.blog.service.BlogService;
-import com.example.blog.service.TagService;
+import com.example.blog.service.CommentService;
 
 @RestController
 @RequestMapping("/api")
-public class BlogController {
+public class CommentController {
 
     @Autowired
-    BlogService BlogService;
+    CommentService CommentService;
 
-    @GetMapping("/blog")
-    public ResponseEntity<ResponseBaseDTO<Iterable<Blog>>> listUser(){ 
-        ResponseBaseDTO<Iterable<Blog>> response = new ResponseBaseDTO<Iterable<Blog>>(); 
+    @GetMapping("/comment")
+    public ResponseEntity<ResponseBaseDTO<Iterable<Comment>>> listUser(){ 
+        ResponseBaseDTO<Iterable<Comment>> response = new ResponseBaseDTO<Iterable<Comment>>(); 
         try
         {         
-         Iterable<Blog> userList = BlogService.findAll();
+         Iterable<Comment> userList = CommentService.findAll();
          response.setStatus(true);
          response.setCode("200");
          response.setMessage("success");
@@ -51,34 +51,10 @@ public class BlogController {
          response.setStatus(false);
          response.setCode("500");
          response.setMessage(e.getMessage());
-
-         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-
         }
-    }
-
-    @PostMapping("/blog")
-	public ResponseEntity<ResponseBaseDTO<Blog>> createBlog(@RequestBody Blog blog) {
-        ResponseBaseDTO<Blog> response = new ResponseBaseDTO<Blog>(); 
-        try
-        {         
-         Blog blogSaved = BlogService.save(blog);
-         response.setStatus(true);
-         response.setCode("200");
-         response.setMessage("success");
-         response.setData(blogSaved);         
-         
-         return new ResponseEntity<>(response ,HttpStatus.OK); 
-
-        }catch(Exception e)
-        {
-         // catch error when get user
-         response.setStatus(false);
-         response.setCode("500");
-         response.setMessage(e.getMessage());
-
+        
         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-        }
-}
+
+    }
 
 }

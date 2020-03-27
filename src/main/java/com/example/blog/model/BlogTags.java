@@ -22,7 +22,6 @@ public class BlogTags extends AuditModel {
     @JsonManagedReference
     private Blog blog;
 
-  
 
     public Long getId() {
         return id;
@@ -47,4 +46,15 @@ public class BlogTags extends AuditModel {
     public void setBlog(Blog blog) {
         this.blog = blog;
     }
+
+    public BlogTags(Blog blog, Tags tags) {
+        this.blog = blog;
+        this.tags = tags;
+    }
+    
+    public BlogTags() {
+
+	}
+
+
 }
