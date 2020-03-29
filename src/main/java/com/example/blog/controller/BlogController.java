@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.blog.model.Blog;
 import com.example.blog.model.Tags;
+import com.example.blog.common.dto.BlogDTO;
 import com.example.blog.common.dto.ResponseBaseDTO;
 import com.example.blog.repository.TagRepository;
 import com.example.blog.service.BlogService;
@@ -33,32 +34,70 @@ public class BlogController {
     BlogService BlogService;
 
     @GetMapping("/blog")
-    public ResponseEntity<ResponseBaseDTO<Iterable<Blog>>> listUser(){ 
+    public ResponseEntity<ResponseBaseDTO<Iterable<Blog>>> listBlog(){ 
         ResponseBaseDTO<Iterable<Blog>> response = new ResponseBaseDTO<Iterable<Blog>>(); 
         try
-        {         
-         Iterable<Blog> userList = BlogService.findAll();
-         response.setStatus(true);
-         response.setCode("200");
-         response.setMessage("success");
-         response.setData(userList);         
-         
-         return new ResponseEntity<>(response ,HttpStatus.OK);
+        {        
+            Iterable<Blog> blogList = BlogService.findAll();
+            response.setStatus(true);
+            response.setCode("200");
+            response.setMessage("success");
+            response.setData(blogList);         
+            
+            return new ResponseEntity<>(response ,HttpStatus.OK);
         }
         catch(Exception e)
         {
-         // catch error when get user
-         response.setStatus(false);
-         response.setCode("500");
-         response.setMessage(e.getMessage());
+            // catch error when get user
+            response.setStatus(false);
+            response.setCode("500");
+            response.setMessage(e.getMessage());
 
-         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-
+            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
     }
 
+    // @GetMapping("/posts")
+    // public ResponseEntity<ResponseBaseDTO<Iterable<Blog>>> listPosts(
+    //     @RequestParam(required = false, name = "categoryId") Integer category_id,
+    //     @RequestParam(required = false, name = "title") String title) {
+        
+    //     ResponseBaseDTO<Iterable<Blog>> response = new ResponseBaseDTO<Iterable<Blog>>(); 
+    //     // Filtering
+    //     if (category_id != null) {
+    //         Iterable<Blog> blogList =  BlogService.findPostByCategoriesId(category_id);
+
+    //         response.setStatus(true);
+    //         response.setCode("200");
+    //         response.setMessage("success");
+    //         response.setData(blogList);
+    
+    //         return new ResponseEntity<>(response ,HttpStatus.OK);
+    //     }
+    //     if (title != null) {
+    //         // TODO validate length
+    //         Iterable<Blog> blogList =  BlogService.findByTitle(title);
+
+    //         response.setStatus(true);
+    //         response.setCode("200");
+    //         response.setMessage("success");
+    //         response.setData(blogList);
+    
+    //         return new ResponseEntity<>(response ,HttpStatus.OK);
+    //     }
+
+    //     Iterable<Blog> blogList = BlogService.findAll();
+    //     response.setStatus(true);
+    //     response.setCode("200");
+    //     response.setMessage("success");
+    //     response.setData(blogList);
+
+    //     return new ResponseEntity<>(response ,HttpStatus.OK);
+    // }
+
+
     @PostMapping("/blog")
-	public ResponseEntity<ResponseBaseDTO<Blog>> createBlog(@RequestBody Blog blog) {
+	public ResponseEntity<ResponseBaseDTO<Blog>> createBlog(@RequestBody BlogDTO blog) {
         ResponseBaseDTO<Blog> response = new ResponseBaseDTO<Blog>(); 
         try
         {         

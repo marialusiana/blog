@@ -33,15 +33,15 @@ public class CommentController {
     CommentService CommentService;
 
     @GetMapping("/comment")
-    public ResponseEntity<ResponseBaseDTO<Iterable<Comment>>> listUser(){ 
+    public ResponseEntity<ResponseBaseDTO<Iterable<Comment>>> listComment(){ 
         ResponseBaseDTO<Iterable<Comment>> response = new ResponseBaseDTO<Iterable<Comment>>(); 
         try
         {         
-         Iterable<Comment> userList = CommentService.findAll();
+         Iterable<Comment> commentlist = CommentService.findAll();
          response.setStatus(true);
          response.setCode("200");
          response.setMessage("success");
-         response.setData(userList);         
+         response.setData(commentlist);         
          
          return new ResponseEntity<>(response ,HttpStatus.OK);
         }

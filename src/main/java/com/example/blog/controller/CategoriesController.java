@@ -34,15 +34,15 @@ public class CategoriesController {
     CategoriesService CategoriesService;
 
     @GetMapping("/categories")
-    public ResponseEntity<ResponseBaseDTO<Iterable<Categories>>> listUser(){ 
+    public ResponseEntity<ResponseBaseDTO<Iterable<Categories>>> listCategories(){ 
         ResponseBaseDTO<Iterable<Categories>> response = new ResponseBaseDTO<Iterable<Categories>>(); 
         try
         {         
-         Iterable<Categories> userList = CategoriesService.findAll();
+         Iterable<Categories> categoriesList = CategoriesService.findAll();
          response.setStatus(true);
          response.setCode("200");
          response.setMessage("success");
-         response.setData(userList);         
+         response.setData(categoriesList);         
          
          return new ResponseEntity<>(response ,HttpStatus.OK);
         }
@@ -89,7 +89,7 @@ public class CategoriesController {
 	}
 
     @DeleteMapping("/categories/{id}")
-	public ResponseEntity<HttpStatus> deleteCatgeories(@PathVariable("id") long id) {
+	public ResponseEntity<HttpStatus> deleteCategories(@PathVariable("id") long id) {
 		try {
 			CategoriesService.delete(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);

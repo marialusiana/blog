@@ -31,15 +31,15 @@ public class TagController {
     TagService tagService;
 
     @GetMapping("/tags")
-    public ResponseEntity<ResponseBaseDTO<Iterable<Tags>>> listUser(){ 
+    public ResponseEntity<ResponseBaseDTO<Iterable<Tags>>> listTags(){ 
         ResponseBaseDTO<Iterable<Tags>> response = new ResponseBaseDTO<Iterable<Tags>>(); 
         try
         {         
-         Iterable<Tags> userList = tagService.findAll();
+         Iterable<Tags> tagList = tagService.findAll();
          response.setStatus(true);
          response.setCode("200");
          response.setMessage("success");
-         response.setData(userList);         
+         response.setData(tagList);         
          
          return new ResponseEntity<>(response ,HttpStatus.OK);
         }
@@ -56,7 +56,7 @@ public class TagController {
     }
 
     @GetMapping("/tags/{id}")
-	public ResponseEntity<ResponseBaseDTO> getTutorialById(@PathVariable("id") long id) {
+	public ResponseEntity<ResponseBaseDTO> getTagById(@PathVariable("id") long id) {
         Optional<Tags> tagData = tagService.findById(id);
         
         ResponseBaseDTO response = new ResponseBaseDTO(); 
@@ -74,7 +74,7 @@ public class TagController {
     }
     
     @PostMapping("/tag")
-	public ResponseEntity<ResponseBaseDTO> createTutorial(@RequestBody Tags tag) {
+	public ResponseEntity<ResponseBaseDTO> createTag(@RequestBody Tags tag) {
         ResponseBaseDTO response = new ResponseBaseDTO(); 
 		try {
              Tags _tag = tagService.save(new Tags(tag.getName()));
@@ -91,7 +91,7 @@ public class TagController {
     }
 
     @PutMapping("/tag/{id}")
-	public ResponseEntity<Tags> updateTutorial(@PathVariable("id") long id, @RequestBody Tags tutorial) {
+	public ResponseEntity<Tags> updateTag(@PathVariable("id") long id, @RequestBody Tags tutorial) {
 		Optional<Tags> tutorialData = tagService.findById(id);
 
 		if (tutorialData.isPresent()) {
@@ -104,7 +104,7 @@ public class TagController {
 	}
 
     @DeleteMapping("/tag/{id}")
-	public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id) {
+	public ResponseEntity<HttpStatus> deleteTag(@PathVariable("id") long id) {
 		try {
 			tagService.delete(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);

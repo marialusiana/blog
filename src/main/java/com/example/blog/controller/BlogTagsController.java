@@ -34,15 +34,15 @@ public class BlogTagsController {
     BlogTagsService BlogTagsService;
 
     @GetMapping("/blogTags")
-    public ResponseEntity<ResponseBaseDTO<Iterable<BlogTags>>> listUser(){ 
+    public ResponseEntity<ResponseBaseDTO<Iterable<BlogTags>>> listBlogTag(){ 
         ResponseBaseDTO<Iterable<BlogTags>> response = new ResponseBaseDTO<Iterable<BlogTags>>(); 
         try
         {         
-         Iterable<BlogTags> userList = BlogTagsService.findAll();
+         Iterable<BlogTags> blogTagsList = BlogTagsService.findAll();
          response.setStatus(true);
          response.setCode("200");
          response.setMessage("success");
-         response.setData(userList);         
+         response.setData(blogTagsList);         
          
          return new ResponseEntity<>(response ,HttpStatus.OK);
         }
@@ -59,7 +59,7 @@ public class BlogTagsController {
     }
 
     @PostMapping("/bloTags")
-	public ResponseEntity<ResponseBaseDTO> createTutorial(@RequestBody BlogTags blogTag) {
+	public ResponseEntity<ResponseBaseDTO> createBlogTags(@RequestBody BlogTags blogTag) {
         ResponseBaseDTO response = new ResponseBaseDTO(); 
 		try {
              BlogTags _blogTag = BlogTagsService.save(new BlogTags(blogTag.getBlog(), blogTag.getTags()));
@@ -76,7 +76,7 @@ public class BlogTagsController {
     }
 
     @PutMapping("/blogTags/{id}")
-	public ResponseEntity<BlogTags> updateBlogTag(@PathVariable("id") long id, @RequestBody BlogTags blogTag) {
+	public ResponseEntity<BlogTags> updateBlogTags(@PathVariable("id") long id, @RequestBody BlogTags blogTag) {
 		Optional<BlogTags> blogTagsData = BlogTagsService.findById(id);
 
 		if (blogTagsData.isPresent()) {
@@ -90,7 +90,7 @@ public class BlogTagsController {
 	}
 
     @DeleteMapping("/blogTags/{id}")
-	public ResponseEntity<HttpStatus> deleteBlogTag(@PathVariable("id") long id) {
+	public ResponseEntity<HttpStatus> deleteBlogTags(@PathVariable("id") long id) {
 		try {
 			BlogTagsService.delete(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);

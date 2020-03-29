@@ -2,6 +2,8 @@ package com.example.blog.service;
 
 import com.example.blog.model.Author;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.util.Optional;
 
 public interface AuthorService {
@@ -9,4 +11,7 @@ public interface AuthorService {
     Optional<Author> findById(long id);
     Author save(Author author);
     void delete(long id);
+    Author update(long id,Author author);
+    Author changePassword(long id, Author author);
+    BCryptPasswordEncoder passwordEncoder();
 }

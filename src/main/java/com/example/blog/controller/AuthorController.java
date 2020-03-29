@@ -18,7 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javassist.NotFoundException;
+
 import com.example.blog.model.Author;
+import com.example.blog.common.dto.AuthorDTO;
+import com.example.blog.common.dto.AuthorPasswordDTO;
 import com.example.blog.common.dto.ResponseBaseDTO;
 import com.example.blog.repository.AuthorRepository;
 import com.example.blog.service.AuthorService;
@@ -31,15 +35,15 @@ public class AuthorController {
     AuthorService authorService;
 
     @GetMapping("/author")
-    public ResponseEntity<ResponseBaseDTO<Iterable<Author>>> listUser(){ 
+    public ResponseEntity<ResponseBaseDTO<Iterable<Author>>> listAuthor(){ 
         ResponseBaseDTO<Iterable<Author>> response = new ResponseBaseDTO<Iterable<Author>>(); 
         try
         {         
-         Iterable<Author> userList = authorService.findAll();
+         Iterable<Author> authorList = authorService.findAll();
          response.setStatus(true);
          response.setCode("200");
          response.setMessage("success");
-         response.setData(userList);         
+         response.setData(authorList);         
          
          return new ResponseEntity<>(response ,HttpStatus.OK);
         }
@@ -74,7 +78,7 @@ public class AuthorController {
     }
     
     @PostMapping("/author")
-	public ResponseEntity<ResponseBaseDTO> createTutorial(@RequestBody Author author) {
+	public ResponseEntity<ResponseBaseDTO> createAuthor(@RequestBody Author author) {
         ResponseBaseDTO response = new ResponseBaseDTO(); 
 		try {
             Author _author = authorService.save(
@@ -92,7 +96,7 @@ public class AuthorController {
     }
 
     @PutMapping("/author/{id}")
-	public ResponseEntity<Author> updateTutorial(@PathVariable("id") long id, @RequestBody Author author) {
+	public ResponseEntity<Author> updateAuthor(@PathVariable("id") long id, @RequestBody Author author) {
 		Optional<Author> authorData = authorService.findById(id);
 
 		if (authorData.isPresent()) {
@@ -105,10 +109,60 @@ public class AuthorController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-	}
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseBaseDTO> putAuthor(@PathVariable Long id, @RequestBody AuthorDTO authorDto) throws NotFoundException {
+        ResponseBaseDTO response = new ResponseBaseDTO(); 
+        Author author = authorService.findById(id).orElseThrow(() -> new NotFoundException("Author id " + id + " NotFound"));
+
+        try {
+            author.setFirstname(authorDto.getFirstname());
+            author.setLastname(authorDto.getLastname());
+            author.setUsername(authorDto.getUsername());
+            response.setStatus(true);
+            response.setCode("200");
+            response.setMessage("success");
+
+            response.setData(authorService.update(id, author));
+        } catch (Exception e) {
+            response.setStatus(false);
+            response.setCode("500");
+            response.setMessage(e.getMessage());
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/password")
+    public ResponseEntity<ResponseBaseDTO> putPaswordAuthor(@PathVariable Integer id, @RequestBody AuthorPasswordDTO authorPasswordDto) throws NotFoundException {
+        ResponseBaseDTO response = new ResponseBaseDTO<>();
+        Author author = authorService.findById(id).orElseThrow(() -> new NotFoundException("Author id " + id + " NotFound"));
+
+        try {
+            author.setPassword(authorPasswordDto.getPassword());
+            response.setStatus(true);
+            response.setCode("200");
+            response.setMessage("success");
+
+            response.setData(authorService.changePassword(id, author));
+        } catch (Exception e) {
+            response.setStatus(false);
+            response.setCode("500");
+            response.setMessage(e.getMessage());
+
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
 
     @DeleteMapping("/author/{id}")
-	public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id) {
+	public ResponseEntity<HttpStatus> deleteAuthor(@PathVariable("id") long id) {
 		try {
 			authorService.delete(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
