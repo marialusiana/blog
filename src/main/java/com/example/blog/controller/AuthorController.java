@@ -117,8 +117,8 @@ public class AuthorController {
         Author author = authorService.findById(id).orElseThrow(() -> new NotFoundException("Author id " + id + " NotFound"));
 
         try {
-            author.setFirstname(authorDto.getFirstname());
-            author.setLastname(authorDto.getLastname());
+            author.setFirstname(authorDto.getFirst_name());
+            author.setLastname(authorDto.getLast_name());
             author.setUsername(authorDto.getUsername());
             response.setStatus(true);
             response.setCode("200");

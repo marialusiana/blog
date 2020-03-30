@@ -57,45 +57,6 @@ public class BlogController {
         }
     }
 
-    // @GetMapping("/posts")
-    // public ResponseEntity<ResponseBaseDTO<Iterable<Blog>>> listPosts(
-    //     @RequestParam(required = false, name = "categoryId") Integer category_id,
-    //     @RequestParam(required = false, name = "title") String title) {
-        
-    //     ResponseBaseDTO<Iterable<Blog>> response = new ResponseBaseDTO<Iterable<Blog>>(); 
-    //     // Filtering
-    //     if (category_id != null) {
-    //         Iterable<Blog> blogList =  BlogService.findPostByCategoriesId(category_id);
-
-    //         response.setStatus(true);
-    //         response.setCode("200");
-    //         response.setMessage("success");
-    //         response.setData(blogList);
-    
-    //         return new ResponseEntity<>(response ,HttpStatus.OK);
-    //     }
-    //     if (title != null) {
-    //         // TODO validate length
-    //         Iterable<Blog> blogList =  BlogService.findByTitle(title);
-
-    //         response.setStatus(true);
-    //         response.setCode("200");
-    //         response.setMessage("success");
-    //         response.setData(blogList);
-    
-    //         return new ResponseEntity<>(response ,HttpStatus.OK);
-    //     }
-
-    //     Iterable<Blog> blogList = BlogService.findAll();
-    //     response.setStatus(true);
-    //     response.setCode("200");
-    //     response.setMessage("success");
-    //     response.setData(blogList);
-
-    //     return new ResponseEntity<>(response ,HttpStatus.OK);
-    // }
-
-
     @PostMapping("/blog")
 	public ResponseEntity<ResponseBaseDTO<Blog>> createBlog(@RequestBody BlogDTO blog) {
         ResponseBaseDTO<Blog> response = new ResponseBaseDTO<Blog>(); 

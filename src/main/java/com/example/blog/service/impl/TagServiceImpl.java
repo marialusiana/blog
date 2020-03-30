@@ -1,5 +1,6 @@
 package com.example.blog.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.example.blog.model.Tags;
@@ -16,12 +17,12 @@ public class TagServiceImpl implements TagService {
     private TagRepository tagRepository;
 
     @Override
-    public Iterable<Tags> findAll() {
+    public List<Tags> findAll() {
         return tagRepository.findAll();
     }
 
     @Override
-    public Iterable<Tags> findByName(String name) {
+    public List<Tags> findByName(String name) {
         return tagRepository.findByName(name);
     }
 

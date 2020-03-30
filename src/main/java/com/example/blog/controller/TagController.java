@@ -31,17 +31,27 @@ public class TagController {
     TagService tagService;
 
     @GetMapping("/tags")
-    public ResponseEntity<ResponseBaseDTO<Iterable<Tags>>> listTags(){ 
-        ResponseBaseDTO<Iterable<Tags>> response = new ResponseBaseDTO<Iterable<Tags>>(); 
+    public ResponseEntity<ResponseBaseDTO<List<Tags>>> listTags(@RequestParam(required = false) String name){ 
+        ResponseBaseDTO<List<Tags>> response = new ResponseBaseDTO<List<Tags>>(); 
         try
-        {         
-         Iterable<Tags> tagList = tagService.findAll();
-         response.setStatus(true);
-         response.setCode("200");
-         response.setMessage("success");
-         response.setData(tagList);         
-         
-         return new ResponseEntity<>(response ,HttpStatus.OK);
+        {  
+  
+        if (name != null){
+            List<Tags> tagList = tagService.findByName(name);
+            response.setStatus(true);
+            response.setCode("200");
+            response.setMessage("success");
+            response.setData(tagList);  
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+                
+            List<Tags> tagList = tagService.findAll();
+            response.setStatus(true);
+            response.setCode("200");
+            response.setMessage("success");
+            response.setData(tagList);         
+            
+            return new ResponseEntity<>(response ,HttpStatus.OK);
         }
         catch(Exception e)
         {
@@ -49,10 +59,9 @@ public class TagController {
          response.setStatus(false);
          response.setCode("500");
          response.setMessage(e.getMessage());
+         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
         }
-        
-        return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-
+    
     }
 
     @GetMapping("/tags/{id}")
@@ -77,7 +86,7 @@ public class TagController {
 	public ResponseEntity<ResponseBaseDTO> createTag(@RequestBody Tags tag) {
         ResponseBaseDTO response = new ResponseBaseDTO(); 
 		try {
-             Tags _tag = tagService.save(new Tags(tag.getName()));
+            Tags _tag = tagService.save(new Tags(tag.getName()));
             
             response.setStatus(true);
             response.setCode("200");
@@ -103,11 +112,21 @@ public class TagController {
 		}
 	}
 
-    @DeleteMapping("/tag/{id}")
-	public ResponseEntity<HttpStatus> deleteTag(@PathVariable("id") long id) {
+    @DeleteMapping("/tag")
+	public ResponseEntity<ResponseBaseDTO> deleteTag(@RequestBody Tags tag) {
 		try {
-			tagService.delete(id);
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            ResponseBaseDTO response = new ResponseBaseDTO(); 
+
+            Optional<Tags> tagData = tagService.getOne(tag.getId());
+
+            tagService.delete(tag.getId());
+            
+            response.setStatus(true);
+            response.setCode("200");
+            response.setMessage("success");
+            response.setData(tag);    
+
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
