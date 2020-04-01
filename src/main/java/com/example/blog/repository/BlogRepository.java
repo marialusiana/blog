@@ -10,10 +10,10 @@ import com.example.blog.common.dto.ResponseBaseDTO;
 import com.example.blog.model.Blog;
 
 public interface BlogRepository extends JpaRepository<Blog, Integer> {
-    // @Query("FROM Post WHERE title LIKE %:title%")
-    // Iterable<Blog> findByTitle(String title);
+    @Query("FROM Blog WHERE title LIKE %:title%")
+    List<Blog> findByTitle(String title);
 
-    // @Query("FROM Blog WHERE category.id LIKE :category_id")
-    // Iterable<Blog> findByCategoriesId(Integer category_id);
+    @Query("FROM Blog WHERE categories.id = categories_id")
+    List<Blog> findByCategoriesId(Integer categories_id);
 
 }

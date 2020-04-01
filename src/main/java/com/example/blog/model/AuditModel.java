@@ -56,7 +56,6 @@ public abstract class AuditModel implements Serializable {
     protected void preUpdate() {
         this.updatedAt = new Date();
     }
-
     @PreRemove
     protected void preRemove() {
         this.updatedAt = new Date();

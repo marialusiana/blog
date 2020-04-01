@@ -19,7 +19,7 @@ import lombok.Data;
 public class Blog extends AuditModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Integer id;
     
     @Column(length = 150)
     @NotBlank(message = "Title is required.")
