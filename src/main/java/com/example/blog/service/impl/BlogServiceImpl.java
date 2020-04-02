@@ -101,8 +101,8 @@ public class BlogServiceImpl implements BlogService {
             
             // Author
             BlogAuthorResponse authorResponse = new BlogAuthorResponse();
-            authorResponse.setFirstname(blog.getAuthor().getFirstname());
-            authorResponse.setLastname(blog.getAuthor().getLastname());
+            authorResponse.setFirstname(blog.getAuthor().getFirst_name());
+            authorResponse.setLastname(blog.getAuthor().getLast_name());
             blogResponse.setAuthor(authorResponse);
 
             // Category

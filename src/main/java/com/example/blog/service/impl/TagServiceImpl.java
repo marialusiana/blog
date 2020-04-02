@@ -71,35 +71,53 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tags save(TagsRequest request) {
+    public ResponseTagsDTO save(TagsRequest request) {
         try {
             Tags tags = new Tags();
 
             tags.setName(request.getName());
             tags.setCreatedAt(new Date());
             tags.setUpdatedAt(new Date());
-           
-            return tagRepository.save(tags);
+
+            
+            tagRepository.save(tags);
+            return fromEntity(tags);
+
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw e;
         }
     }
 
-    // @Override
-    // public Tags save(Tags tags) {
-    //     return tagRepository.save(tags);
-    // }
+    @Override
+    public ResponseTagsDTO deleteById(Integer id) {
+        try {
+            Tags tags = tagRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
+            tagRepository.deleteById(id);
 
-    // @Override
-    // public void delete(long id) {
-    //     tagRepository.deleteById(id);
-    // }
+            return fromEntity(tags);
+
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
 
     @Override
-    public void deleteById(Integer id) {
+    public ResponseTagsDTO update(Integer id, TagsRequest request) {
         try {
-            tagRepository.deleteById(id);
+            Tags tags = tagRepository.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException(id.toString(), FIELD, RESOURCE)
+            );   
+            
+            BeanUtils.copyProperties(request, tags);
+            tags.setUpdatedAt(new Date());
+            tagRepository.save(tags);
+
+            return fromEntity(tags);
+        } catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            throw e;
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw e;

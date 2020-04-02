@@ -19,7 +19,9 @@ public interface TagService {
 
     Page<ResponseTagsDTO> findByName(Pageable pageable, String param);
 
-    Tags save(TagsRequest request);
+    ResponseTagsDTO save(TagsRequest request);
 
-    void deleteById(Integer id);
+    ResponseTagsDTO deleteById(Integer id);
+
+    ResponseTagsDTO update(Integer id, TagsRequest request);
 }
