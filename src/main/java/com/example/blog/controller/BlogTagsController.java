@@ -27,7 +27,6 @@ import com.example.blog.service.BlogTagsService;
 import com.example.blog.service.CommentService;
 
 @RestController
-@RequestMapping("/api")
 public class BlogTagsController {
 
     @Autowired

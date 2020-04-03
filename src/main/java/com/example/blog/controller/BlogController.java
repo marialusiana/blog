@@ -31,7 +31,6 @@ import com.example.blog.service.BlogService;
 import com.example.blog.service.TagService;
 
 @RestController
-@RequestMapping("/api")
 public class BlogController {
 
     @Autowired

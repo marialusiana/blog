@@ -38,13 +38,12 @@ import com.example.blog.repository.AuthorRepository;
 import com.example.blog.service.AuthorService;
 
 @RestController
-@RequestMapping("/api")
 public class AuthorController {
 
     @Autowired
     AuthorService authorService;
 
-    @GetMapping(value = "/author")
+    @GetMapping(value = "/authors")
     public BaseResponseDTO<MyPage<ResponseAuthorDTO>> listCategories(
         MyPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request
     ) { 
@@ -70,23 +69,23 @@ public class AuthorController {
        return BaseResponseDTO.ok(response);
     }
 
-    @GetMapping(value = "/author/{id}")
+    @GetMapping(value = "/authors/{id}")
     public BaseResponseDTO<ResponseAuthorDTO> getOne(@PathVariable Integer id) {
         return BaseResponseDTO.ok(authorService.findById(id));
     }
 
-    @DeleteMapping(value = "/author")
+    @DeleteMapping(value = "/authors")
     public BaseResponseDTO deleteAuthor(@Valid @RequestBody Author author) {
         
        return BaseResponseDTO.ok(authorService.deleteById(author.getId()));
     }
 
-    @PostMapping(value = "/author")
+    @PostMapping(value = "/authors")
     public BaseResponseDTO createAuthor(@Valid @RequestBody AuthorRequest request) {
         return BaseResponseDTO.ok(authorService.save(request));
     }
 
-    @PutMapping(value = "/author/{id}")
+    @PutMapping(value = "/authors/{id}")
     public BaseResponseDTO updateAuthor(
          @Valid @RequestBody AuthorDTO request, @PathVariable("id") Integer id
     ) {
@@ -94,7 +93,7 @@ public class AuthorController {
        return BaseResponseDTO.ok(authorService.update(id, request));
     }
 
-    @PutMapping("/{id}/password")
+    @PutMapping("/authors/{id}/password")
     public BaseResponseDTO updatePasswordAuthor(
          @Valid @RequestBody AuthorPasswordDTO request, @PathVariable("id") Integer id
     ) {
