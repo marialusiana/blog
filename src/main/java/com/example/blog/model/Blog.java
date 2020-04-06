@@ -1,5 +1,6 @@
 package com.example.blog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -12,6 +13,10 @@ import javax.websocket.Decoder.Text;
 
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import lombok.Data;
 
 @Entity
@@ -37,5 +42,23 @@ public class Blog extends AuditModel{
     @JoinColumn(name = "categories_id")
     @JsonManagedReference
     private Categories categories;
-    
-}
+
+    // @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    // @JoinTable(
+    //     name = "blog_tags", 
+    //     joinColumns = { @JoinColumn(name = "blog_id") }, 
+    //     inverseJoinColumns = { @JoinColumn(name = "tags_id") }
+    // )
+    // private List<Tags> tag = new ArrayList<>();
+
+    @OneToMany
+    @JoinColumn(name = "blog_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Set<Comment> comment;
+
+    @OneToMany(fetch= FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "blog_id")
+    private List<Tags> tags;
+
+ 
+}  

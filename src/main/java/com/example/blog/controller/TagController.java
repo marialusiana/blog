@@ -45,6 +45,8 @@ public class TagController {
            tags = tagService.findAll(MyPageable.convertToPageable(pageable));
        }
 
+       tags = tagService.findAll(MyPageable.convertToPageable(pageable));
+
        PageConverter<ResponseTagsDTO> converter = new PageConverter<>();
        String url = String.format("%s://%s:%d/api/tags",request.getScheme(),  request.getServerName(), request.getServerPort());
 

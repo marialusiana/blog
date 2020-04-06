@@ -3,6 +3,9 @@ package com.example.blog.service.impl;
 import java.util.Date;
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
+import com.example.blog.common.dto.CommentDTO;
 import com.example.blog.common.dto.exception.ResourceNotFoundException;
 import com.example.blog.common.dto.request.CommentRequest;
 import com.example.blog.common.dto.response.ResponseCommentDTO;
@@ -27,6 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 public class CommentServiceImpl implements CommentService {
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private BlogRepository blogRepository;
 
     private static final String RESOURCE = "Comment";
     private static final String FIELD = "id";
@@ -75,16 +81,19 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public ResponseCommentDTO save(CommentRequest request) {
+    public ResponseCommentDTO save(CommentDTO request, Integer id) {
         try {
             Comment comment = new Comment();
 
+
+            Blog blog = blogRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("Blog not found."));
+
             comment.setGuest_email(request.getGuest_email());
             comment.setContent(request.getContent());
-            comment.setBlog(request.getBlog());
+            comment.setBlog(blog);
             comment.setCreatedAt(new Date());
             comment.setUpdatedAt(new Date());
-
             
             commentRepository.save(comment);
             return fromEntity(comment);
@@ -110,7 +119,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseCommentDTO update(Integer id, CommentRequest request) {
+    public ResponseCommentDTO update(Integer id, CommentDTO request) {
         try {
             Comment comment = commentRepository.findById(id).orElseThrow(
                 ()->new ResourceNotFoundException(id.toString(), FIELD, RESOURCE)

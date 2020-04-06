@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.blog.model.Blog;
 import com.example.blog.model.Comment;
+import com.example.blog.common.dto.CommentDTO;
 import com.example.blog.common.dto.MyPage;
 import com.example.blog.common.dto.MyPageable;
 import com.example.blog.common.dto.ResponseBaseDTO;
@@ -67,7 +68,7 @@ public class CommentController {
     // }
 
     @GetMapping(value = "/comment")
-    public BaseResponseDTO<MyPage<ResponseCommentDTO>> listCategories(
+    public BaseResponseDTO<MyPage<ResponseCommentDTO>> listComment(
         MyPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request
     ) { 
        Page<ResponseCommentDTO> categories;
@@ -98,19 +99,19 @@ public class CommentController {
     }
 
     @DeleteMapping(value = "/comment")
-    public BaseResponseDTO deleteTag(@RequestBody Comment comment) {
+    public BaseResponseDTO deleteComment(@RequestBody Comment comment) {
         
        return BaseResponseDTO.ok(CommentService.deleteById(comment.getId()));
     }
 
-    @PostMapping(value = "/comment")
-    public BaseResponseDTO createTag(@Valid @RequestBody CommentRequest request) {
-        return BaseResponseDTO.ok(CommentService.save(request));
+    @PostMapping(value = "/posts/{id}/comment")
+    public BaseResponseDTO createComment(@PathVariable("id") Integer id, @Valid @RequestBody CommentDTO request) {
+        return BaseResponseDTO.ok(CommentService.save(request, id));
     }
 
     @PutMapping(value = "/comment/{id}")
-    public BaseResponseDTO updateTag(
-         @Valid @RequestBody CommentRequest request, @PathVariable("id") Integer id
+    public BaseResponseDTO updateComment(
+         @Valid @RequestBody CommentDTO request, @PathVariable("id") Integer id
     ) {
        CommentService.update(id, request);
        return BaseResponseDTO.ok(CommentService.update(id, request));

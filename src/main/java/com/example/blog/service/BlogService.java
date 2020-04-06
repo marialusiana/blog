@@ -21,7 +21,9 @@ public interface BlogService {
     BaseResponseDTO<List<Blog>> findPostByCategoriesId(Integer categories_id);
     BaseResponseDTO<List<Blog>> findByTitle(String title);
     Blog save(BlogDTO blog);
+    Blog save2(BlogDTO blog);
     Blog update(Blog blogs);
+    Blog update2(BlogDTO blogs, Integer id);
     BaseResponseDTO<BlogResponse> delete(BlogDeleteRequest request);
     Optional<Blog> findById(Integer id);
 

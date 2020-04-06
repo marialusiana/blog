@@ -1,12 +1,16 @@
 package com.example.blog.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.example.blog.common.dto.exception.ResourceNotFoundException;
 import com.example.blog.common.dto.request.TagsRequest;
 import com.example.blog.common.dto.response.ResponseTagsDTO;
+import com.example.blog.model.Blog;
 import com.example.blog.model.Tags;
 import com.example.blog.repository.TagRepository;
 import com.example.blog.service.TagService;
@@ -104,6 +108,17 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public void deleteAllByPostId(Integer id) {
+        try {
+            tagRepository.deleteAllPostByID(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+            
+    }
+
+    @Override
     public ResponseTagsDTO update(Integer id, TagsRequest request) {
         try {
             Tags tags = tagRepository.findById(id).orElseThrow(
@@ -122,5 +137,32 @@ public class TagServiceImpl implements TagService {
             log.error(e.getMessage(), e);
             throw e;
         }
+    }
+
+    @Override
+    public void saveAll(Blog blog, String[] tags){
+        try{
+            Set<String> reqTags = Set.of(tags);
+
+            if(reqTags.size() > 0){
+                List<Tags> tagList = new ArrayList<Tags>();
+    
+                for (String tagName: tags){
+                    Tags tag = new Tags();
+                    tag.setName(tagName);
+                    tag.setBlog(blog);
+                    tagList.add(tag);
+                }
+                
+                tagRepository.saveAll(tagList);
+            }
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+
+        }
+       
+        
     }
 }
