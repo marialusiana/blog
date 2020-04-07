@@ -88,7 +88,7 @@ public class CategoriesController {
     }
 
     @GetMapping(value = "/categories/{id}")
-    public BaseResponseDTO<ResponseCategoriesDTO> getOne(@PathVariable Integer id) {
+    public BaseResponseDTO<ResponseCategoriesDTO> getOneCategories(@PathVariable Integer id) {
         return BaseResponseDTO.ok(CategoriesService.findById(id));
     }
     

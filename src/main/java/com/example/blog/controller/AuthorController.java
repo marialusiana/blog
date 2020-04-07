@@ -44,7 +44,7 @@ public class AuthorController {
     AuthorService authorService;
 
     @GetMapping(value = "/authors")
-    public BaseResponseDTO<MyPage<ResponseAuthorDTO>> listCategories(
+    public BaseResponseDTO<MyPage<ResponseAuthorDTO>> listAuthor(
         MyPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request
     ) { 
        Page<ResponseAuthorDTO> author;

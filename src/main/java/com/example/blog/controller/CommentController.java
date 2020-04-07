@@ -42,33 +42,8 @@ public class CommentController {
     @Autowired
     CommentService CommentService;
 
-    // @GetMapping("/comment")
-    // public ResponseEntity<ResponseBaseDTO<Iterable<Comment>>> listComment(){ 
-    //     ResponseBaseDTO<Iterable<Comment>> response = new ResponseBaseDTO<Iterable<Comment>>(); 
-    //     try
-    //     {         
-    //      Iterable<Comment> commentlist = CommentService.findAll();
-    //      response.setStatus(true);
-    //      response.setCode("200");
-    //      response.setMessage("success");
-    //      response.setData(commentlist);         
-         
-    //      return new ResponseEntity<>(response ,HttpStatus.OK);
-    //     }
-    //     catch(Exception e)
-    //     {
-    //      // catch error when get user
-    //      response.setStatus(false);
-    //      response.setCode("500");
-    //      response.setMessage(e.getMessage());
-    //     }
-        
-    //     return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-
-    // }
-
-    @GetMapping(value = "/comment")
-    public BaseResponseDTO<MyPage<ResponseCommentDTO>> listComment(
+    @GetMapping(value = "/posts/{id}/comment")
+    public BaseResponseDTO<MyPage<ResponseCommentDTO>> listComment(@PathVariable Integer id,
         MyPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request
     ) { 
        Page<ResponseCommentDTO> categories;
@@ -76,7 +51,7 @@ public class CommentController {
        if (param != null) {
            categories = CommentService.findByName(MyPageable.convertToPageable(pageable), param);
        } else {
-           categories = CommentService.findAll(MyPageable.convertToPageable(pageable));
+           categories = CommentService.findAllByBlogId(MyPageable.convertToPageable(pageable), id);
        }
 
        PageConverter<ResponseCommentDTO> converter = new PageConverter<>();
@@ -93,28 +68,20 @@ public class CommentController {
        return BaseResponseDTO.ok(response);
     }
 
-    @GetMapping(value = "/comment/{id}")
-    public BaseResponseDTO<ResponseCommentDTO> getOne(@PathVariable Integer id) {
-        return BaseResponseDTO.ok(CommentService.findById(id));
+    @GetMapping(value = "/posts/{blog}/comment/{id}")
+    public BaseResponseDTO<ResponseCommentDTO> getOneComment(@PathVariable Integer blog, @PathVariable Integer id) {
+        return BaseResponseDTO.ok(CommentService.findByBlogId(blog, id));
     }
 
-    @DeleteMapping(value = "/comment")
-    public BaseResponseDTO deleteComment(@RequestBody Comment comment) {
+    @DeleteMapping(value = "/posts/{id}/comment")
+    public BaseResponseDTO deleteComment(@PathVariable("id") Integer id) {
         
-       return BaseResponseDTO.ok(CommentService.deleteById(comment.getId()));
+       return BaseResponseDTO.ok(CommentService.deleteById(id));
     }
 
     @PostMapping(value = "/posts/{id}/comment")
     public BaseResponseDTO createComment(@PathVariable("id") Integer id, @Valid @RequestBody CommentDTO request) {
         return BaseResponseDTO.ok(CommentService.save(request, id));
-    }
-
-    @PutMapping(value = "/comment/{id}")
-    public BaseResponseDTO updateComment(
-         @Valid @RequestBody CommentDTO request, @PathVariable("id") Integer id
-    ) {
-       CommentService.update(id, request);
-       return BaseResponseDTO.ok(CommentService.update(id, request));
     }
 
 }

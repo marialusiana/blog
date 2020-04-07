@@ -62,7 +62,7 @@ public class TagController {
     }
 
     @GetMapping(value = "/tags/{id}")
-    public BaseResponseDTO<ResponseTagsDTO> getOne(@PathVariable Integer id) {
+    public BaseResponseDTO<ResponseTagsDTO> getOneTag(@PathVariable Integer id) {
         return BaseResponseDTO.ok(tagService.findById(id));
     }
 

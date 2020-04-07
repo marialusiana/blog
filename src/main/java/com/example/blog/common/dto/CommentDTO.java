@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class CommentDTO {
 
-    // private Integer id;
+    private Integer id;
     private String guest_email;
     private String content;
     // private Integer blog;

@@ -145,11 +145,7 @@ public class BlogServiceImpl implements BlogService {
             blog = blogRepository.save(blog);
 
             tagService.deleteAllByPostId(blog.getId());
-
-          
-            // if(reqBlog.getTags().length >0){
-                tagService.saveAll(blog, reqBlog.getTags());
-            // }
+            tagService.saveAll(blog, reqBlog.getTags());
 
             return blog;
 

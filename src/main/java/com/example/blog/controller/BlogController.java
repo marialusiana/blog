@@ -48,34 +48,19 @@ public class BlogController {
 
     @Autowired
     BlogService BlogService;
+
+    @Autowired
     AuthorRepository authorRepository;
+
+    @Autowired
     CategoriesRepository categoriesRepository;
+
+    @Autowired
     TagRepository tagRepository;
+
+    @Autowired
     TagService tagService;
 
-    // @GetMapping("/blog")
-    // public ResponseEntity<ResponseBaseDTO<List<Blog>>> listBlog(){ 
-    //     ResponseBaseDTO<List<Blog>> response = new ResponseBaseDTO<List<Blog>>(); 
-    //     try
-    //     {        
-    //         List<Blog> blogList = BlogService.findAll();
-    //         response.setStatus(true);
-    //         response.setCode("200");
-    //         response.setMessage("success");
-    //         response.setData(blogList);         
-            
-    //         return new ResponseEntity<>(response ,HttpStatus.OK);
-    //     }
-    //     catch(Exception e)
-    //     {
-    //         // catch error when get user
-    //         response.setStatus(false);
-    //         response.setCode("500");
-    //         response.setMessage(e.getMessage());
-
-    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-    //     }
-    // }
 
     @GetMapping("/posts")
     public BaseResponseDTO<List<Blog>> listBlog(
@@ -124,7 +109,7 @@ public class BlogController {
     }
 
     @DeleteMapping("/posts")
-    public BaseResponseDTO<BlogResponse> deletePost(@RequestBody BlogDeleteRequest request) {
+    public BaseResponseDTO<BlogResponse> deleteBlog(@RequestBody BlogDeleteRequest request) {
         return BlogService.delete(request);
     }
 

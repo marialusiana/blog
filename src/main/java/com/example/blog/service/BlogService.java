@@ -26,5 +26,6 @@ public interface BlogService {
     Blog update2(BlogDTO blogs, Integer id);
     BaseResponseDTO<BlogResponse> delete(BlogDeleteRequest request);
     Optional<Blog> findById(Integer id);
+ 
 
 }

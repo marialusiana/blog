@@ -14,6 +14,7 @@ import com.example.blog.model.Comment;
 import com.example.blog.repository.BlogRepository;
 import com.example.blog.repository.CommentRepository;
 import com.example.blog.service.CommentService;
+import com.example.blog.service.BlogService;
 import com.example.blog.service.CategoriesService;
 import com.example.blog.service.TagService;
 
@@ -34,13 +35,16 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private BlogRepository blogRepository;
 
+    @Autowired
+    private CommentService commentService;
+
     private static final String RESOURCE = "Comment";
     private static final String FIELD = "id";
 
     @Override
-    public Page<ResponseCommentDTO> findAll(Pageable pageable) {
+    public Page<ResponseCommentDTO> findAllByBlogId(Pageable pageable, Integer id) {
         try {
-            return commentRepository.findAll(pageable).map(this::fromEntity);
+            return commentRepository.findAllByBlogId(pageable, id).map(this::fromEntity);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw e;
@@ -48,11 +52,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseCommentDTO findById(Integer id) {
+    public ResponseCommentDTO findByBlogId(Integer blog, Integer id) {
         try {
             Comment comment = commentRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
             
-            return fromEntity(comment);
+            Comment res = commentRepository.findByBlogId(blog, id);
+
+            return fromEntity(res);
         } catch (ResourceNotFoundException e) {
             log.error(e.getMessage(), e);
             throw e;
@@ -107,15 +113,29 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public ResponseCommentDTO deleteById(Integer id) {
         try {
-            Comment comment = commentRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
-            commentRepository.deleteById(id);
 
-            return fromEntity(comment);
+            ResponseCommentDTO response = new ResponseCommentDTO();
+
+            Blog blog = blogRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
+           
+            commentService.deleteAllByPostId(blog.getId());
+            return response;
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             throw e;
         }
+    }
+
+    @Override
+    public void deleteAllByPostId(Integer id) {
+        try {
+            commentRepository.deleteAllPostByID(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+            
     }
 
     @Override
@@ -139,9 +159,4 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 
-
-    // @Override
-    // public Iterable<Comment> findAll() {
-    //     return commentRepository.findAll();
-    // }
 }

@@ -13,9 +13,9 @@ import java.util.Optional;
 public interface CommentService {
     // Iterable<Comment> findAll();
 
-    Page<ResponseCommentDTO> findAll(Pageable pageable);
+    Page<ResponseCommentDTO> findAllByBlogId(Pageable pageable, Integer id);
 
-    ResponseCommentDTO findById(Integer id);
+    ResponseCommentDTO findByBlogId(Integer blog ,Integer id);
 
     Page<ResponseCommentDTO> findByName(Pageable pageable, String param);
 
@@ -24,4 +24,6 @@ public interface CommentService {
     ResponseCommentDTO deleteById(Integer id);
 
     ResponseCommentDTO update(Integer id, CommentDTO request);
+
+    void deleteAllByPostId (Integer id);
 }
