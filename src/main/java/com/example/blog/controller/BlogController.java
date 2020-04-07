@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +35,7 @@ import com.example.blog.common.dto.request.BlogDeleteRequest;
 import com.example.blog.common.dto.request.BlogRequest;
 import com.example.blog.common.dto.response.BaseResponseDTO;
 import com.example.blog.common.dto.response.BlogResponse;
-import com.example.blog.common.dto.response.ResponseBlogDTO;
 import com.example.blog.common.dto.response.ResponseTagsDTO;
-import com.example.blog.common.dto.util.PageConverter;
 import com.example.blog.repository.TagRepository;
 import com.example.blog.service.BlogService;
 import com.example.blog.service.TagService;
@@ -51,52 +48,50 @@ public class BlogController {
 
     @Autowired
     BlogService BlogService;
-
-    @Autowired
     AuthorRepository authorRepository;
-
-    @Autowired
     CategoriesRepository categoriesRepository;
-
-    @Autowired
     TagRepository tagRepository;
-
-    @Autowired
     TagService tagService;
 
+    // @GetMapping("/blog")
+    // public ResponseEntity<ResponseBaseDTO<List<Blog>>> listBlog(){ 
+    //     ResponseBaseDTO<List<Blog>> response = new ResponseBaseDTO<List<Blog>>(); 
+    //     try
+    //     {        
+    //         List<Blog> blogList = BlogService.findAll();
+    //         response.setStatus(true);
+    //         response.setCode("200");
+    //         response.setMessage("success");
+    //         response.setData(blogList);         
+            
+    //         return new ResponseEntity<>(response ,HttpStatus.OK);
+    //     }
+    //     catch(Exception e)
+    //     {
+    //         // catch error when get user
+    //         response.setStatus(false);
+    //         response.setCode("500");
+    //         response.setMessage(e.getMessage());
+
+    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+    //     }
+    // }
 
     @GetMapping("/posts")
-    public BaseResponseDTO<MyPage<ResponseBlogDTO>> listBlog(
-        MyPageable pageable, @RequestParam(required = false, name="title") String title, HttpServletRequest request,
-        @RequestParam(required = false, name = "category_id") Integer categories_id,
-        @RequestParam(required = false, name = "author_id") Integer author_id) {
-
-            Page<ResponseBlogDTO> blog;
-
-            if (title != null) {
-                blog = BlogService.findByName(MyPageable.convertToPageable(pageable), title);
-            }else if (categories_id != null){
-                blog = BlogService.findByCategoriesId(MyPageable.convertToPageable(pageable), categories_id);
-            }else if (author_id != null){
-                blog = BlogService.findByAuthorId(MyPageable.convertToPageable(pageable), author_id);
-            }
-            else {
-                blog = BlogService.findAll(MyPageable.convertToPageable(pageable));
-            }
-     
-            PageConverter<ResponseBlogDTO> converter = new PageConverter<>();
-            String url = String.format("%s://%s:%d/posts",request.getScheme(),  request.getServerName(), request.getServerPort());
-     
-            String search = "";
-     
-            if(title != null){
-                search += "&param="+title;
-            }
-     
-            MyPage<ResponseBlogDTO> response = converter.convert(blog, url, search);
-     
-            return BaseResponseDTO.ok(response);
+    public BaseResponseDTO<List<Blog>> listBlog(
+        @RequestParam(required = false, name = "categoryId") Integer categories_id,
+        @RequestParam(required = false, name = "title") String title) {
         
+        // Filtering
+        if (categories_id != null) {
+            return BlogService.findPostByCategoriesId(categories_id);
+        }
+        if (title != null) {
+            // TODO validate length
+            return BlogService.findByTitle(title);
+        }
+
+        return BlogService.findAll();
     }
 
     @PostMapping(value = "/posts2")
@@ -113,7 +108,7 @@ public class BlogController {
          response.setStatus(true);
          response.setCode("200");
          response.setMessage("success");
-        //  response.setData("");         
+         response.setData(blogSaved);         
          
          return new ResponseEntity<>(response ,HttpStatus.OK); 
 
@@ -129,7 +124,7 @@ public class BlogController {
     }
 
     @DeleteMapping("/posts")
-    public BaseResponseDTO<BlogResponse> deleteBlog(@RequestBody BlogDeleteRequest request) {
+    public BaseResponseDTO<BlogResponse> deletePost(@RequestBody BlogDeleteRequest request) {
         return BlogService.delete(request);
     }
 
