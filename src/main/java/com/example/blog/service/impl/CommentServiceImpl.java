@@ -44,8 +44,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Page<ResponseCommentDTO> findAllByBlogId(Pageable pageable, Integer id) {
         try {
+            Blog blog = blogRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
             return commentRepository.findAllByBlogId(pageable, id).map(this::fromEntity);
-        } catch (Exception e) {
+        } 
+        catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+        catch (Exception e) {
             log.error(e.getMessage(), e);
             throw e;
         }

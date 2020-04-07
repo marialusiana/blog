@@ -12,6 +12,7 @@ import com.example.blog.common.dto.response.BaseResponseDTO;
 import com.example.blog.common.dto.response.BlogAuthorResponse;
 import com.example.blog.common.dto.response.BlogCategoriesResponse;
 import com.example.blog.common.dto.response.BlogResponse;
+import com.example.blog.common.dto.response.ResponseBlogDTO;
 import com.example.blog.model.Author;
 import com.example.blog.model.Blog;
 import com.example.blog.model.Categories;
@@ -22,12 +23,17 @@ import com.example.blog.repository.CategoriesRepository;
 import com.example.blog.repository.TagRepository;
 import com.example.blog.service.BlogService;
 import com.example.blog.service.TagService;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import com.example.blog.common.dto.exception.ResourceNotFoundException;
-
+@Slf4j
 @Service
 public class BlogServiceImpl implements BlogService {
     @Autowired
@@ -49,11 +55,64 @@ public class BlogServiceImpl implements BlogService {
     private static final String FIELD = "id";
 
     @Override
-    public BaseResponseDTO<List<Blog>> findAll() {
-        List<Blog> blogs = blogRepository.findAll();
-
-        return BaseResponseDTO.ok(blogs);
+    public  Page<ResponseBlogDTO> findAll(Pageable pageable)  {
+        try {
+            return blogRepository.findAll(pageable).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
     }
+
+    @Override
+    public Page<ResponseBlogDTO> findByName(Pageable pageable, String param) {
+        try {
+            param = param.toLowerCase();
+            return blogRepository.findByName(pageable, param).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    // @Override
+    // public Page<ResponseBlogDTO> findByTagName(Pageable pageable, String tag_name) {
+    //     try {
+    //         tag_name = tag_name.toLowerCase();
+    //         return blogRepository.findByTagName(pageable, tag_name).map(this::fromEntity);
+    //     } catch (Exception e) {
+    //         log.error(e.getMessage(), e);
+    //         throw e;
+    //     }
+    // }
+
+    @Override
+    public  Page<ResponseBlogDTO> findByCategoriesId(Pageable pageable, Integer categories_id) {
+        try {
+            return blogRepository.findByCategoriesId(pageable, categories_id).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    @Override
+    public  Page<ResponseBlogDTO> findByAuthorId(Pageable pageable, Integer author_id) {
+        try {
+            return blogRepository.findByAuthorId(pageable, author_id).map(this::fromEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    private ResponseBlogDTO fromEntity(Blog blog) {
+        ResponseBlogDTO response = new ResponseBlogDTO();
+        BeanUtils.copyProperties(blog, response);
+        return response;
+    }
+
+  
 
     @Override
     public Optional<Blog> findById(Integer id) {
@@ -76,12 +135,7 @@ public class BlogServiceImpl implements BlogService {
 
     // }
 
-    @Override
-    public BaseResponseDTO<List<Blog>> findPostByCategoriesId(Integer categories_id) {
-        List<Blog> blogs = blogRepository.findByCategoriesId(categories_id);
 
-        return BaseResponseDTO.ok(blogs);
-    }
 
     @Override
     public BaseResponseDTO<List<Blog>> findByTitle(String title) {
@@ -159,7 +213,7 @@ public class BlogServiceImpl implements BlogService {
 
     public BaseResponseDTO<BlogResponse> delete(BlogDeleteRequest request) {
         try {
-            Blog blog = blogRepository.getOne(request.getId());
+            Blog blog = blogRepository.findById(request.getId()).orElseThrow(()->new ResourceNotFoundException(request.getId().toString(), FIELD, RESOURCE));
             blogRepository.delete(blog);
 
             BlogResponse blogResponse = new BlogResponse();

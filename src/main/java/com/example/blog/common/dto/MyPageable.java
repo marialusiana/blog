@@ -34,7 +34,7 @@ public class MyPageable {
             if (myPageable.getSize() != null) {
                 size = myPageable.getSize();
             } else {
-                size = 20;
+                size = 10;
             }
 
             if(myPageable.getSortBy() != null) {
