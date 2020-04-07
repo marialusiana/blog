@@ -55,7 +55,7 @@ public class CommentController {
        }
 
        PageConverter<ResponseCommentDTO> converter = new PageConverter<>();
-       String url = String.format("%s://%s:%d/api/categories",request.getScheme(),  request.getServerName(), request.getServerPort());
+       String url = String.format("%s://%s:%d/posts/"+id+"/comment",request.getScheme(),  request.getServerName(), request.getServerPort());
 
        String search = "";
 

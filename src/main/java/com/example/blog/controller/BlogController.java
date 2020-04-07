@@ -93,7 +93,7 @@ public class BlogController {
          response.setStatus(true);
          response.setCode("200");
          response.setMessage("success");
-         response.setData(blogSaved);         
+        //  response.setData("");         
          
          return new ResponseEntity<>(response ,HttpStatus.OK); 
 

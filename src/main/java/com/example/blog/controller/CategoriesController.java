@@ -55,7 +55,7 @@ public class CategoriesController {
        }
 
        PageConverter<ResponseCategoriesDTO> converter = new PageConverter<>();
-       String url = String.format("%s://%s:%d/api/categories",request.getScheme(),  request.getServerName(), request.getServerPort());
+       String url = String.format("%s://%s:%d/categories",request.getScheme(),  request.getServerName(), request.getServerPort());
 
        String search = "";
 

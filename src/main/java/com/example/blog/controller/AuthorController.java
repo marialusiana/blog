@@ -56,7 +56,7 @@ public class AuthorController {
        }
 
        PageConverter<ResponseAuthorDTO> converter = new PageConverter<>();
-       String url = String.format("%s://%s:%d/api/author",request.getScheme(),  request.getServerName(), request.getServerPort());
+       String url = String.format("%s://%s:%d/author",request.getScheme(),  request.getServerName(), request.getServerPort());
 
        String search = "";
 
