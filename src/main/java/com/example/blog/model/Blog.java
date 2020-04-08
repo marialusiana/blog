@@ -43,14 +43,6 @@ public class Blog extends AuditModel{
     @JsonManagedReference
     private Categories categories;
 
-    // @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    // @JoinTable(
-    //     name = "blog_tags", 
-    //     joinColumns = { @JoinColumn(name = "blog_id") }, 
-    //     inverseJoinColumns = { @JoinColumn(name = "tags_id") }
-    // )
-    // private List<Tags> tag = new ArrayList<>();
-
     @OneToMany
     @JoinColumn(name = "blog_id", referencedColumnName = "id")
     @JsonIgnore

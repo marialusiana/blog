@@ -7,24 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.blog.model.Tags;
-import com.example.blog.common.dto.ResponseBaseDTO;
 import com.example.blog.common.dto.request.TagsRequest;
 import com.example.blog.common.dto.response.BaseResponseDTO;
 import com.example.blog.common.dto.response.ResponseTagsDTO;
 import com.example.blog.common.dto.util.PageConverter;
 import com.example.blog.common.dto.MyPage;
 import com.example.blog.common.dto.MyPageable;
-import com.example.blog.repository.TagRepository;
 import com.example.blog.service.TagService;
 
 @RestController

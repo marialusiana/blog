@@ -1,22 +1,17 @@
 package com.example.blog.service.impl;
 
 import java.util.Date;
-import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
 import com.example.blog.common.dto.CommentDTO;
 import com.example.blog.common.dto.exception.ResourceNotFoundException;
-import com.example.blog.common.dto.request.CommentRequest;
 import com.example.blog.common.dto.response.ResponseCommentDTO;
 import com.example.blog.model.Blog;
 import com.example.blog.model.Comment;
 import com.example.blog.repository.BlogRepository;
 import com.example.blog.repository.CommentRepository;
 import com.example.blog.service.CommentService;
-import com.example.blog.service.BlogService;
-import com.example.blog.service.CategoriesService;
-import com.example.blog.service.TagService;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,8 +99,6 @@ public class CommentServiceImpl implements CommentService {
             comment.setGuest_email(request.getGuest_email());
             comment.setContent(request.getContent());
             comment.setBlog(blog);
-            comment.setCreatedAt(new Date());
-            comment.setUpdatedAt(new Date());
             
             commentRepository.save(comment);
             return fromEntity(comment);

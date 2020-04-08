@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import com.example.blog.model.Blog;
 import com.example.blog.model.Tags;
 
 public interface TagRepository extends PagingAndSortingRepository<Tags, Integer> {
@@ -18,4 +21,6 @@ public interface TagRepository extends PagingAndSortingRepository<Tags, Integer>
 	@Transactional
 	@Query("DELETE From Tags WHERE blog.id =:id")
 	void deleteAllPostByID(Integer id);
+
+	List<Tags> findByBlog(Blog blog);
 }

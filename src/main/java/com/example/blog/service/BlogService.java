@@ -12,28 +12,26 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-import java.util.Optional;
 
 public interface BlogService {
-    // Iterable<Blog> findAll();
-    // List<Blog> findAll();
+   
+    Blog save(BlogDTO blog);
+
+    Blog update(BlogDTO blogs, Integer id);
+
+    BaseResponseDTO<BlogResponse> delete(BlogDeleteRequest request);
+
     Page<ResponseBlogDTO> findAll(Pageable pageable);
 
-    Page<ResponseBlogDTO> findByName(Pageable pageable, String param);
-    // Page<ResponseBlogDTO> findByTagName(Pageable pageable, String tag_name);
+    ResponseBlogDTO findById(Integer id);
 
-    // Iterable<Blog> findPostByCategoriesId(Integer category_id);
-    // Iterable<Blog> findByTitle(String title);
-    Page<ResponseBlogDTO> findByCategoriesId(Pageable pageable, Integer categories_id);
-    Page<ResponseBlogDTO> findByAuthorId(Pageable pageable, Integer author_id);
-    BaseResponseDTO<List<Blog>> findByTitle(String title);
-    Blog save(BlogDTO blog);
-    Blog save2(BlogDTO blog);
-    Blog update(Blog blogs);
-    Blog update2(BlogDTO blogs, Integer id);
-    BaseResponseDTO<BlogResponse> delete(BlogDeleteRequest request);
-    Optional<Blog> findById(Integer id);
- 
+    Page<ResponseBlogDTO> search(Pageable pageable, String param);
+
+    Page<ResponseBlogDTO> findByAuthor(Pageable pageable, Integer author_id);
+    
+    Page<ResponseBlogDTO> findByCategories(Pageable pageable, Integer categories_id);
+
+    Page<ResponseBlogDTO> findByTag(Pageable pageable, String tag_name);
+
 
 }
