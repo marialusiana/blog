@@ -22,6 +22,8 @@ public interface AuthorService {
 
     Page<ResponseAuthorDTO> findByName(Pageable pageable, String param);
 
+    public Author findByUsername(String username);
+
     ResponseAuthorDTO deleteById(Integer id);
 
     ResponseAuthorDTO save(AuthorRequest request);

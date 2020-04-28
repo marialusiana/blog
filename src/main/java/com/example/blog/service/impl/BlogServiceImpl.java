@@ -40,7 +40,7 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private TagRepository tagRepository;
 
-    private static final String RESOURCE = "Tags";
+    private static final String RESOURCE = "Blog";
     private static final String FIELD = "id";
 
     

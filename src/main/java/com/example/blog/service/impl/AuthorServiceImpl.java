@@ -40,6 +40,12 @@ public class AuthorServiceImpl implements AuthorService {
             throw e;
         }
     }
+    
+    @Override
+	public Author findByUsername(String username) {
+		return authorRepository.findByUsername(username);
+	}
+
 
     @Override
     public ResponseAuthorDTO findById(Integer id) {
