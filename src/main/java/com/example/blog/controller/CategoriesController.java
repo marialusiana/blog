@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.blog.model.Author;
 import com.example.blog.model.Blog;
 import com.example.blog.model.Categories;
 import com.example.blog.model.Tags;
@@ -42,11 +45,19 @@ public class CategoriesController {
     @Autowired
     CategoriesService CategoriesService;
 
+
+ 
+
     @GetMapping(value = "/categories")
     public BaseResponseDTO<MyPage<ResponseCategoriesDTO>> listCategories(
         MyPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request
     ) { 
+
+       
+        
        Page<ResponseCategoriesDTO> categories;
+
+       
 
        if (param != null) {
            categories = CategoriesService.findByName(MyPageable.convertToPageable(pageable), param);

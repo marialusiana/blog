@@ -1,11 +1,16 @@
 package com.example.blog.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+import com.example.blog.common.dto.MyPage;
 import com.example.blog.common.dto.exception.ResourceNotFoundException;
 import com.example.blog.common.dto.request.CategoriesRequest;
+import com.example.blog.common.dto.response.BaseResponseDTO;
 import com.example.blog.common.dto.response.ResponseCategoriesDTO;
+import com.example.blog.model.Author;
 import com.example.blog.model.Blog;
 import com.example.blog.model.Categories;
 import com.example.blog.repository.BlogRepository;
@@ -18,6 +23,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +41,16 @@ public class CategoriesServiceImpl implements CategoriesService {
     private static final String RESOURCE = "Categories";
     private static final String FIELD = "id";
 
+
+  
+
     @Override
     public Page<ResponseCategoriesDTO> findAll(Pageable pageable) {
+
+        // BaseResponseDTO response = new BaseResponseDTO<>();
+
+
+
         try {
             return categoriesRepository.findAll(pageable).map(this::fromEntity);
         } catch (Exception e) {

@@ -15,13 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
@@ -60,7 +63,8 @@ import com.example.blog.service.AuthorService;
 
 @RestController
 public class AuthorController {
-
+    
+    
     @Autowired
     AuthorService authorService;
 
@@ -76,13 +80,22 @@ public class AuthorController {
 	}
 
     @Autowired
-	private AuthenticationManager authenticationManager;
-
+    private AuthenticationManager authenticationManager;
+    
+    
+	@PreAuthorize("hasAuthority('superadmin1') or hasAuthority('SYSTEMADMIN') or hasAuthority('SUPERADMIN') or hasAuthority('COORDINATOR')")
     @GetMapping(value = "/authors")
     public BaseResponseDTO<MyPage<ResponseAuthorDTO>> listAuthor(
         MyPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request
     ) { 
        Page<ResponseAuthorDTO> author;
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Author userAuth = (Author) auth.getPrincipal();
+		
+    //    if (!userAuth.getRole().equals("superadmin")) {
+    //        return BaseResponseDTO.error("99", "Hanya Role SuperAdmin yang dapat akses Author");
+    //    }
 
        if (param != null) {
            author = authorService.findByName(MyPageable.convertToPageable(pageable), param);
@@ -200,19 +213,39 @@ public class AuthorController {
 		OAuth2Authentication authenticationRequest = new OAuth2Authentication(oauth2Request, authentication);
 		authenticationRequest.setAuthenticated(true);
 
-		OAuth2AccessToken token = tokenServices().createAccessToken(authenticationRequest);
+        OAuth2AccessToken token = tokenServices().createAccessToken(authenticationRequest);
+
+        
+        Map<String, Object> adInfo = new HashMap<>();
+
+        adInfo.put("role", null);
+        
+        try {
+
+            Author author = (Author) authentication.getPrincipal();
+            
+			adInfo.put("role", author.getRole());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		((DefaultOAuth2AccessToken) token).setAdditionalInformation(adInfo);
 
 
 		return token;
     } 
     
+    
     @Autowired
-	public AuthorizationServerTokenServices tokenServices() {
-		final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-		defaultTokenServices.setAccessTokenValiditySeconds(-1);
+    public AuthorizationServerTokenServices tokenServices() {
+        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+        defaultTokenServices.setSupportRefreshToken(true);
+        defaultTokenServices.setRefreshTokenValiditySeconds(6 * 60 * 60);
+        defaultTokenServices.setAccessTokenValiditySeconds(1 * 60 * 60);
 
-		defaultTokenServices.setTokenStore(tokenStore());
-		return defaultTokenServices;
-	}
+        defaultTokenServices.setTokenStore(tokenStore());
+        return defaultTokenServices;
+    }
 
 }
