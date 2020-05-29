@@ -41,9 +41,6 @@ public class CategoriesServiceImpl implements CategoriesService {
     private static final String RESOURCE = "Categories";
     private static final String FIELD = "id";
 
-
-  
-
     @Override
     public Page<ResponseCategoriesDTO> findAll(Pageable pageable) {
 

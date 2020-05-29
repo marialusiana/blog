@@ -1,11 +1,13 @@
 package com.example.blog.controller;
 
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +25,7 @@ import com.example.blog.common.dto.response.BaseResponseDTO;
 import com.example.blog.common.dto.response.BlogResponse;
 import com.example.blog.common.dto.response.ResponseBlogDTO;
 import com.example.blog.common.dto.util.PageConverter;
+import com.example.blog.model.Author;
 import com.example.blog.repository.TagRepository;
 import com.example.blog.service.BlogService;
 import com.example.blog.service.TagService;
@@ -95,19 +98,45 @@ public class BlogController {
         return BaseResponseDTO.ok(BlogService.findById(id));
     }
 
-    @PostMapping(value = "/posts")
-    public BaseResponseDTO createTag(@Valid @RequestBody BlogDTO request) {
+    @PostMapping(value = "/posts", consumes = MediaType.ALL_VALUE)
+    public BaseResponseDTO createTag(BlogDTO request ) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Author userAuth = (Author) auth.getPrincipal();
+
+        Author author = authorRepository.findByUserId(request.getAuthor_id());
+
+        if(!userAuth.getId().equals(author.getId())){
+           return BaseResponseDTO.error("404", "hanya bisa create author diri sendiri");
+        }
+
         return BaseResponseDTO.ok(BlogService.save(request));
     }
 
     @DeleteMapping("/posts")
     public BaseResponseDTO<BlogResponse> deleteBlog(@RequestBody BlogDeleteRequest request) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Author userAuth = (Author) auth.getPrincipal();
+           
+        if (!userAuth.getRole().equals("superadmin")) {
+            return BaseResponseDTO.error("99", "Hanya Role SuperAdmin yang dapat akses Author");
+        }
         return BlogService.delete(request);
     }
 
     @PutMapping(value = "/posts/{id}")
     public BaseResponseDTO UpdateBlog(@PathVariable("id") Integer id, @Valid @RequestBody BlogDTO request) {
-        return BaseResponseDTO.ok( BlogService.update(request, id));
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Author userAuth = (Author) auth.getPrincipal();
+
+        Author author = authorRepository.findByUserId(request.getAuthor_id());
+        if(!userAuth.getId().equals(author.getId())){
+            return BaseResponseDTO.ok( BlogService.update(request, id));
+        }else{
+            return BaseResponseDTO.error("404", "hanya bisa create author diri sendiri");
+        }
     }
 
 }

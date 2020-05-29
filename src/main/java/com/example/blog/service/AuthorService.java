@@ -30,4 +30,6 @@ public interface AuthorService {
 
     ResponseAuthorDTO update(Integer id, AuthorDTO request);
     ResponseAuthorDTO updatePassword(Integer id, AuthorPasswordDTO request);
+
+    public Author findByUserId (Integer id);
 }

@@ -1,22 +1,31 @@
 package com.example.blog.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import com.example.blog.common.dto.AuthorDTO;
 import com.example.blog.common.dto.AuthorPasswordDTO;
 import com.example.blog.common.dto.exception.ResourceNotFoundException;
 import com.example.blog.common.dto.request.AuthorRequest;
+import com.example.blog.common.dto.response.BaseResponseDTO;
 import com.example.blog.common.dto.response.ResponseAuthorDTO;
 import com.example.blog.model.Author;
+import com.example.blog.model.RoleAppsMenu;
+import com.example.blog.model.RoleMember;
+import com.example.blog.model.AppsMenu;
 import com.example.blog.repository.AuthorRepository;
 import com.example.blog.service.AuthorService;
+import com.example.blog.service.roleMenuService;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +37,16 @@ public class AuthorServiceImpl implements AuthorService {
     @Autowired
     private AuthorRepository authorRepository;
 
+    @Autowired
+    private roleMenuService roleMenuService;
+
     private static final String RESOURCE = "Author";
     private static final String FIELD = "id";
 
     @Override
     public Page<ResponseAuthorDTO> findAll(Pageable pageable) {
+
+       
         try {
             return authorRepository.findAll(pageable).map(this::fromEntity);
         } catch (Exception e) {
@@ -40,6 +54,11 @@ public class AuthorServiceImpl implements AuthorService {
             throw e;
         }
     }
+
+    @Override
+	public Author findByUserId(Integer id) {
+		return authorRepository.findByUserId(id);
+	}
     
     @Override
 	public Author findByUsername(String username) {

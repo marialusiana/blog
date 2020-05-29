@@ -6,6 +6,9 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
@@ -19,6 +22,7 @@ import org.hibernate.annotations.Where;
 import com.example.blog.view.View;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 
 @Entity
@@ -27,22 +31,28 @@ import com.fasterxml.jackson.annotation.JsonView;
 @DynamicUpdate
 public class RoleAppsMenu {
 
-	@EmbeddedId
-	RoleAppsMenuKey id;
+	// @EmbeddedId
+	// RoleAppsMenuKey id;
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 	
 	@ManyToOne(targetEntity = Role.class,fetch=FetchType.LAZY)
 	@MapsId("roleId")
 	@JoinColumn(name="user_role_id")
-	@JsonBackReference(value = "role-roleappsmenu")
+	@JsonManagedReference
+    // private Author author;
+	// @JsonBackReference(value = "role-roleappsmenu")
 	private Role roleApps;
 	
 	@ManyToOne(targetEntity = AppsMenu.class,fetch=FetchType.LAZY)
 	@MapsId("menuId")
 	@JoinColumn(name="menu_id")
-	@JsonBackReference(value = "appsmenu-roleappsmenu")
+	@JsonManagedReference
+    // private Author author;
+	// @JsonBackReference(value = "appsmenu-roleappsmenu")
 	private AppsMenu appsMenu;
-	
-	
 	
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd-MM-yyyy HH:mm:ss",timezone="GMT+7")
 	@JsonView(View.Internal.class)
@@ -65,15 +75,17 @@ public class RoleAppsMenu {
 	@Column(name="is_deleted")
 	private Integer is_deleted;
 
+	@Column(name="request_type")
+	private String requestType;
 	
 	//Getter Setter
-	public RoleAppsMenuKey getId() {
-		return id;
-	}
+	// public RoleAppsMenuKey getId() {
+	// 	return id;
+	// }
 
-	public void setId(RoleAppsMenuKey id) {
-		this.id = id;
-	}
+	// public void setId(RoleAppsMenuKey id) {
+	// 	this.id = id;
+	// }
 
 	public Role getRoleApps() {
 		return roleApps;
@@ -121,6 +133,14 @@ public class RoleAppsMenu {
 
 	public void setIs_deleted(Integer is_deleted) {
 		this.is_deleted = is_deleted;
+	}
+
+	public String getRequestType() {
+		return requestType;
+	}
+
+	public void setRequestType(String requestType) {
+		this.requestType = requestType;
 	}
 
 	//Constructor

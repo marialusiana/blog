@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.sql.DataSource;
 
-import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -60,6 +60,7 @@ import com.example.blog.common.dto.response.ResponseOauthDTO;
 import com.example.blog.common.dto.util.PageConverter;
 import com.example.blog.repository.AuthorRepository;
 import com.example.blog.service.AuthorService;
+import com.example.blog.service.roleMenuService;
 
 @RestController
 public class AuthorController {
@@ -81,21 +82,32 @@ public class AuthorController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private roleMenuService roleMenuService;
+
+
+    @Autowired
+    AuthorRepository authorRepository;
+
     
     
-	@PreAuthorize("hasAuthority('superadmin1') or hasAuthority('SYSTEMADMIN') or hasAuthority('SUPERADMIN') or hasAuthority('COORDINATOR')")
+	// @PreAuthorize("hasAuthority('superadmin1') or hasAuthority('SYSTEMADMIN') or hasAuthority('SUPERADMIN') or hasAuthority('COORDINATOR')")
     @GetMapping(value = "/authors")
     public BaseResponseDTO<MyPage<ResponseAuthorDTO>> listAuthor(
         MyPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request
     ) { 
-       Page<ResponseAuthorDTO> author;
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		Author userAuth = (Author) auth.getPrincipal();
-		
-    //    if (!userAuth.getRole().equals("superadmin")) {
-    //        return BaseResponseDTO.error("99", "Hanya Role SuperAdmin yang dapat akses Author");
-    //    }
+        boolean roleAccess = roleMenuService.roleAccess("/authors", request.getMethod());
+    //    String tes= request.getMethod();
+
+
+        if(roleAccess ==false){
+            return BaseResponseDTO.error("99", "Role anda tidak dapat mengakses menu author");
+        }
+         
+
+       Page<ResponseAuthorDTO> author;
 
        if (param != null) {
            author = authorService.findByName(MyPageable.convertToPageable(pageable), param);
@@ -122,21 +134,53 @@ public class AuthorController {
         return BaseResponseDTO.ok(authorService.findById(id));
     }
 
-    @DeleteMapping(value = "/authors")
-    public BaseResponseDTO deleteAuthor(@Valid @RequestBody Author author) {
+    @DeleteMapping(value = "/authors",  consumes = MediaType.ALL_VALUE)
+    public BaseResponseDTO deleteAuthor(Author author, HttpServletRequest request) {
+
+        boolean roleAccess = roleMenuService.roleAccess("/authors", request.getMethod());
+
+        if(roleAccess ==false){
+            return BaseResponseDTO.error("99", "Role anda tidak dapat mengakses menu author");
+        }
         
        return BaseResponseDTO.ok(authorService.deleteById(author.getId()));
     }
 
+
+
     @PostMapping(value = "/authors")
-    public BaseResponseDTO createAuthor(@Valid @RequestBody AuthorRequest request) {
+    public BaseResponseDTO createAuthor(@Valid @RequestBody AuthorRequest request, HttpServletRequest requests) {
+
+        boolean roleAccess = roleMenuService.roleAccess("/authors", requests.getMethod());
+
+        if(roleAccess ==false){
+            return BaseResponseDTO.error("99", "Role anda tidak dapat mengakses menu author");
+        }
+
         return BaseResponseDTO.ok(authorService.save(request));
     }
 
     @PutMapping(value = "/authors/{id}")
     public BaseResponseDTO updateAuthor(
-         @Valid @RequestBody AuthorDTO request, @PathVariable("id") Integer id
+         @Valid @RequestBody AuthorDTO request, @PathVariable("id") Integer id, HttpServletRequest requests
     ) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Author userAuth = (Author) auth.getPrincipal();
+
+        Author author = authorRepository.findByUserId(id);
+
+
+        if(!userAuth.getId().equals(author.getId())){
+            return BaseResponseDTO.error("404", "hanya bisa update author diri sendiri");
+         }
+
+        boolean roleAccess = roleMenuService.roleAccess("/authors", requests.getMethod());
+
+        if(roleAccess ==false){
+            return BaseResponseDTO.error("99", "Role anda tidak dapat mengakses menu author");
+        }
+
        authorService.update(id, request);
        return BaseResponseDTO.ok(authorService.update(id, request));
     }
@@ -145,6 +189,16 @@ public class AuthorController {
     public BaseResponseDTO updatePasswordAuthor(
          @Valid @RequestBody AuthorPasswordDTO request, @PathVariable("id") Integer id
     ) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Author userAuth = (Author) auth.getPrincipal();
+
+        Author author = authorRepository.findByUserId(id);
+
+
+        if(!userAuth.getId().equals(author.getId())){
+            return BaseResponseDTO.error("404", "hanya bisa update author diri sendiri");
+        }
+
        authorService.updatePassword(id, request);
        return BaseResponseDTO.ok(authorService.updatePassword(id, request));
     }

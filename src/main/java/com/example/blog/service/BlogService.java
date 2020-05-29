@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface BlogService {
    
-    Blog save(BlogDTO blog);
+    BaseResponseDTO<BlogResponse> save(BlogDTO blog);
 
     Blog update(BlogDTO blogs, Integer id);
 

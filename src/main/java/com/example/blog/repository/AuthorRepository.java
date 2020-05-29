@@ -17,4 +17,8 @@ public interface AuthorRepository extends PagingAndSortingRepository<Author, Int
 
     @Query("select e from #{#entityName} e where e.username like %:username% ")
     Author findByUsername(String username);
+
+    @Query("select e from #{#entityName} e where e.id = :id ")
+    Author findByUserId(Integer id);
+ 
 }

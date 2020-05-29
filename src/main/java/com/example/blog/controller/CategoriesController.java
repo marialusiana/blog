@@ -38,12 +38,17 @@ import com.example.blog.common.dto.util.PageConverter;
 import com.example.blog.repository.TagRepository;
 import com.example.blog.service.CategoriesService;
 import com.example.blog.service.TagService;
+import com.example.blog.service.roleMenuService;
 
 @RestController
 public class CategoriesController {
 
     @Autowired
     CategoriesService CategoriesService;
+
+    @Autowired
+    private roleMenuService roleMenuService;
+
 
 
  
@@ -53,7 +58,19 @@ public class CategoriesController {
         MyPageable pageable, @RequestParam(required = false) String param, HttpServletRequest request
     ) { 
 
+        boolean roleAccess = roleMenuService.roleAccess("/categories", request.getMethod());
+
+        if(roleAccess ==false){
+            return BaseResponseDTO.error("99", "Role anda tidak dapat mengakses menu categories");
+        }
        
+
+        // Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        // Author userAuth = (Author) auth.getPrincipal();
+           
+        // if (!userAuth.getRole().equals("superadmin")) {
+        //     return BaseResponseDTO.error("99", "Hanya Role SuperAdmin yang dapat akses Author");
+        // }
         
        Page<ResponseCategoriesDTO> categories;
 
@@ -80,13 +97,26 @@ public class CategoriesController {
     }
 
     @DeleteMapping(value = "/categories")
-    public BaseResponseDTO deleteCategories(@RequestBody Categories categories) {
-        
+    public BaseResponseDTO deleteCategories(@RequestBody Categories categories, HttpServletRequest request) {
+
+        boolean roleAccess = roleMenuService.roleAccess("/categories", request.getMethod());
+
+        if(roleAccess ==false){
+            return BaseResponseDTO.error("99", "Role anda tidak dapat mengakses menu categories");
+        }
+      
        return BaseResponseDTO.ok(CategoriesService.deleteById(categories.getId()));
     }
 
     @PostMapping(value = "/categories")
     public BaseResponseDTO createCategories(@Valid @RequestBody CategoriesRequest request) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Author userAuth = (Author) auth.getPrincipal();
+           
+        if (!userAuth.getRole().equals("superadmin")) {
+            return BaseResponseDTO.error("99", "Hanya Role SuperAdmin yang dapat akses Author");
+        }
         return BaseResponseDTO.ok(CategoriesService.save(request));
     }
 
@@ -94,12 +124,26 @@ public class CategoriesController {
     public BaseResponseDTO updateCategories(
          @Valid @RequestBody CategoriesRequest request, @PathVariable("id") Integer id
     ) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Author userAuth = (Author) auth.getPrincipal();
+           
+        if (!userAuth.getRole().equals("superadmin")) {
+            return BaseResponseDTO.error("99", "Hanya Role SuperAdmin yang dapat akses Author");
+        }
        CategoriesService.update(id, request);
        return BaseResponseDTO.ok(CategoriesService.update(id, request));
     }
 
     @GetMapping(value = "/categories/{id}")
     public BaseResponseDTO<ResponseCategoriesDTO> getOneCategories(@PathVariable Integer id) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Author userAuth = (Author) auth.getPrincipal();
+           
+        if (!userAuth.getRole().equals("superadmin")) {
+            return BaseResponseDTO.error("99", "Hanya Role SuperAdmin yang dapat akses Author");
+        }
         return BaseResponseDTO.ok(CategoriesService.findById(id));
     }
     

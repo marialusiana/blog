@@ -13,9 +13,13 @@ import com.example.blog.common.dto.response.BlogCategoriesResponse;
 import com.example.blog.common.dto.response.BlogResponse;
 import com.example.blog.common.dto.response.BlogTagResponse;
 import com.example.blog.common.dto.response.ResponseBlogDTO;
+import com.example.blog.model.Author;
 import com.example.blog.model.Blog;
+import com.example.blog.model.Categories;
 import com.example.blog.model.Tags;
+import com.example.blog.repository.AuthorRepository;
 import com.example.blog.repository.BlogRepository;
+import com.example.blog.repository.CategoriesRepository;
 import com.example.blog.repository.TagRepository;
 import com.example.blog.service.BlogService;
 import com.example.blog.service.TagService;
@@ -24,6 +28,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +45,12 @@ public class BlogServiceImpl implements BlogService {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private AuthorRepository authorRepository;
+
+    @Autowired
+    private CategoriesRepository categoriesRepository;
 
     private static final String RESOURCE = "Blog";
     private static final String FIELD = "id";
@@ -82,14 +94,42 @@ public class BlogServiceImpl implements BlogService {
         return blog_tag_list;
     }
 
-    public Blog save(BlogDTO reqBlog) {
-         
+    public BaseResponseDTO<BlogResponse> save(BlogDTO reqBlog) {
+
+
         try{
+
+       
+
+            Author author = authorRepository.findById(reqBlog.getAuthor_id())
+            .orElseThrow(
+                () -> new ResourceNotFoundException(reqBlog.getAuthor_id().toString(), "authorId", "Author")
+            );
+    
+            Categories categories = categoriesRepository.findById(reqBlog.getCategories_id())
+                .orElseThrow(
+                    () -> new ResourceNotFoundException(reqBlog.getCategories_id().toString(), "categoriesId", "Categories")
+            );
+
+    
+
             Blog blog = new Blog();
+
+            blog.setTitle(reqBlog.getTitle());
+            blog.setContent(reqBlog.getContent());
+            blog.setCreatedAt(new Date());
+            blog.setUpdatedAt(new Date());
+            blog.setCategories(categories);
+            blog.setAuthor(author);
+
             tagService.saveAll(blog, reqBlog.getTags());
 
-            return blogRepository.save(blog);
+            blogRepository.save(blog);
+            return BaseResponseDTO.ok();
 
+        }catch (ResourceNotFoundException e) {
+            log.error(e.getMessage(), e);
+            throw e;
         }catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -101,9 +141,16 @@ public class BlogServiceImpl implements BlogService {
         Blog blog = blogRepository.findById(id).orElseThrow(()->new ResourceNotFoundException(id.toString(), FIELD, RESOURCE));
          
         try{
-            blog = blogRepository.save(blog);
+            blog.setTitle(reqBlog.getTitle());
+            blog.setContent(reqBlog.getContent());
+            blog.setCategories(reqBlog.getCategories());
+            blog.setAuthor(reqBlog.getAuthor());
+
+
             tagService.deleteAllByPostId(blog.getId());
             tagService.saveAll(blog, reqBlog.getTags());
+
+           blogRepository.save(blog);
 
             return blog;
 

@@ -27,6 +27,7 @@ public class BlogDTO {
     private Author author;
     private Categories categories;
     private String[] tags;
-
+    private Integer author_id;
+    private Integer categories_id;
 
 }
