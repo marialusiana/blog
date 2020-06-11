@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 
 @Entity
-@Table(name="uma_tbl_menu")
+@Table(name="tbl_menu")
 @DynamicUpdate
 public class AppsMenu {
 	

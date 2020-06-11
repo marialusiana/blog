@@ -31,6 +31,7 @@ import com.example.blog.service.BlogService;
 import com.example.blog.service.TagService;
 import com.example.blog.repository.AuthorRepository;
 import com.example.blog.repository.CategoriesRepository;
+import com.example.blog.service.roleMenuService;
 
 @RestController
 public class BlogController {
@@ -50,6 +51,9 @@ public class BlogController {
     @Autowired
     TagService tagService;
 
+    @Autowired
+    private roleMenuService roleMenuService;
+
 
     @GetMapping("/posts")
     public BaseResponseDTO<MyPage<ResponseBlogDTO>> listBlog(
@@ -57,6 +61,12 @@ public class BlogController {
         @RequestParam(required = false, name = "category_id") Integer categories_id,
         @RequestParam(required = false, name = "author_id") Integer author_id,
         @RequestParam(required = false) String tag_name) {
+
+            boolean roleAccess = roleMenuService.roleAccess("/posts", request.getMethod());
+
+            if(roleAccess ==false){
+                return BaseResponseDTO.error("99", "Role anda tidak dapat mengakses menu posts blog");
+            }
 
             Page<ResponseBlogDTO> blog;
 

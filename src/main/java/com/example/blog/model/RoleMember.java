@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 
 @Entity
-@Table(name="uma_tbl_user_role_member")
+@Table(name="tbl_user_role_member")
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 public class RoleMember implements Serializable {

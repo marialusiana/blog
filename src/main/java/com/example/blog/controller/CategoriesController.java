@@ -109,40 +109,37 @@ public class CategoriesController {
     }
 
     @PostMapping(value = "/categories")
-    public BaseResponseDTO createCategories(@Valid @RequestBody CategoriesRequest request) {
+    public BaseResponseDTO createCategories(@Valid @RequestBody CategoriesRequest request, HttpServletRequest requests) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Author userAuth = (Author) auth.getPrincipal();
-           
-        if (!userAuth.getRole().equals("superadmin")) {
-            return BaseResponseDTO.error("99", "Hanya Role SuperAdmin yang dapat akses Author");
+        boolean roleAccess = roleMenuService.roleAccess("/categories", requests.getMethod());
+
+        if(roleAccess ==false){
+            return BaseResponseDTO.error("99", "Role anda tidak dapat mengakses menu categories");
         }
         return BaseResponseDTO.ok(CategoriesService.save(request));
     }
 
     @PutMapping(value = "/categories/{id}")
     public BaseResponseDTO updateCategories(
-         @Valid @RequestBody CategoriesRequest request, @PathVariable("id") Integer id
+         @Valid @RequestBody CategoriesRequest request, @PathVariable("id") Integer id,  HttpServletRequest requests
     ) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Author userAuth = (Author) auth.getPrincipal();
-           
-        if (!userAuth.getRole().equals("superadmin")) {
-            return BaseResponseDTO.error("99", "Hanya Role SuperAdmin yang dapat akses Author");
+        boolean roleAccess = roleMenuService.roleAccess("/categories", requests.getMethod());
+
+        if(roleAccess ==false){
+            return BaseResponseDTO.error("99", "Role anda tidak dapat mengakses menu categories");
         }
        CategoriesService.update(id, request);
        return BaseResponseDTO.ok(CategoriesService.update(id, request));
     }
 
     @GetMapping(value = "/categories/{id}")
-    public BaseResponseDTO<ResponseCategoriesDTO> getOneCategories(@PathVariable Integer id) {
+    public BaseResponseDTO<ResponseCategoriesDTO> getOneCategories(@PathVariable Integer id, HttpServletRequest requests) {
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Author userAuth = (Author) auth.getPrincipal();
-           
-        if (!userAuth.getRole().equals("superadmin")) {
-            return BaseResponseDTO.error("99", "Hanya Role SuperAdmin yang dapat akses Author");
+        boolean roleAccess = roleMenuService.roleAccess("/categories", requests.getMethod());
+
+        if(roleAccess ==false){
+            return BaseResponseDTO.error("99", "Role anda tidak dapat mengakses menu categories");
         }
         return BaseResponseDTO.ok(CategoriesService.findById(id));
     }

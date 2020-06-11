@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 
 @Entity
-@Table(name="uma_tbl_user_role_apps_menu")
+@Table(name="tbl_user_role_apps_menu")
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 public class RoleAppsMenu {

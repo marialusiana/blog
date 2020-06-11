@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name="uma_tbl_user_role", uniqueConstraints = { @UniqueConstraint(columnNames = {"role_title"}) })
+@Table(name="tbl_user_role", uniqueConstraints = { @UniqueConstraint(columnNames = {"role_title"}) })
 @Where(clause = "is_deleted = 0")
 @DynamicUpdate
 public class Role implements GrantedAuthority {

@@ -93,7 +93,7 @@ public class Author extends AuditModel implements UserDetails   {
 
  
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "uma_tbl_user_role_member", joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_role_id", referencedColumnName = "user_role_id"))
+    @JoinTable(name = "tbl_user_role_member", joinColumns = @JoinColumn(name = "author_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_role_id", referencedColumnName = "user_role_id"))
     @OrderBy
     @JsonIgnore
     private Collection<Role> authorities;
