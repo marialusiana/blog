@@ -61,6 +61,7 @@ import com.example.blog.common.dto.response.ResponseOauthDTO;
 import com.example.blog.common.dto.util.PageConverter;
 import com.example.blog.repository.AuthorRepository;
 import com.example.blog.service.AuthorService;
+import com.example.blog.service.LogService;
 import com.example.blog.service.roleMenuService;
 
 @RestController
@@ -90,6 +91,9 @@ public class AuthorController {
 
     @Autowired
     AuthorRepository authorRepository;
+
+    @Autowired
+    private LogService logService;
 
     
     
@@ -127,6 +131,8 @@ public class AuthorController {
 
        MyPage<ResponseAuthorDTO> response = converter.convert(author, url, search);
 
+
+       boolean log = logService.createLooging("author","get author", "200","get All description","desc","0 ms") ;
 
        return BaseResponseDTO.ok(response);
     }
