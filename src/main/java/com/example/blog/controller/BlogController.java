@@ -53,29 +53,29 @@ public class BlogController {
     TagRepository tagRepository;
     TagService tagService;
 
-    // @GetMapping("/blog")
-    // public ResponseEntity<ResponseBaseDTO<List<Blog>>> listBlog(){ 
-    //     ResponseBaseDTO<List<Blog>> response = new ResponseBaseDTO<List<Blog>>(); 
-    //     try
-    //     {        
-    //         List<Blog> blogList = BlogService.findAll();
-    //         response.setStatus(true);
-    //         response.setCode("200");
-    //         response.setMessage("success");
-    //         response.setData(blogList);         
+    @GetMapping("/blog")
+    public ResponseEntity<ResponseBaseDTO<List<Blog>>> listBlog(){ 
+        ResponseBaseDTO<List<Blog>> response = new ResponseBaseDTO<List<Blog>>(); 
+        try
+        {        
+            List<Blog> blogList = BlogService.findAll();
+            response.setStatus(true);
+            response.setCode("200");
+            response.setMessage("success");
+            response.setData(blogList);         
             
-    //         return new ResponseEntity<>(response ,HttpStatus.OK);
-    //     }
-    //     catch(Exception e)
-    //     {
-    //         // catch error when get user
-    //         response.setStatus(false);
-    //         response.setCode("500");
-    //         response.setMessage(e.getMessage());
+            return new ResponseEntity<>(response ,HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            // catch error when get user
+            response.setStatus(false);
+            response.setCode("500");
+            response.setMessage(e.getMessage());
 
-    //         return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
-    //     }
-    // }
+            return new ResponseEntity<>(response, HttpStatus.EXPECTATION_FAILED);
+        }
+    }
 
     @GetMapping("/posts")
     public BaseResponseDTO<List<Blog>> listBlog(
